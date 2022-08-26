@@ -5,6 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	error2 "go-reviewer-api-service/src/main/go/error"
 	"go-reviewer-api-service/src/main/go/model"
+	"go-reviewer-api-service/src/main/go/response"
 	"net/http"
 	"strconv"
 )
@@ -21,7 +22,7 @@ func NewUserRequestController(e *echo.Echo, us model.UserRequestService) {
 	handler := &UserRequestController{
 		userRequestService: us,
 	}
-	e.GET("/user-requests/:id", handler.GetUserRequestByOrgId)
+	e.GET("/user-request/:id", handler.GetUserRequestByOrgId)
 	e.GET("/user-requests", handler.GetAll)
 
 }
@@ -40,7 +41,11 @@ func (u *UserRequestController) GetUserRequestByOrgId(c echo.Context) error {
 		return c.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
 	}
 
-	return c.JSON(http.StatusOK, userRequet)
+	var res response.Response
+	res.Status = http.StatusOK
+	res.Message = "success"
+	res.Data = userRequet
+	return c.JSON(http.StatusOK, res)
 }
 func (u *UserRequestController) GetAll(c echo.Context) error {
 
@@ -49,8 +54,11 @@ func (u *UserRequestController) GetAll(c echo.Context) error {
 	if err != nil {
 		return c.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
 	}
-
-	return c.JSON(http.StatusOK, userRequets)
+	var res response.Response
+	res.Status = http.StatusOK
+	res.Message = "success"
+	res.Data = userRequets
+	return c.JSON(http.StatusOK, res)
 }
 
 func getStatusCode(err error) int {

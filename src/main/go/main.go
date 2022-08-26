@@ -58,10 +58,10 @@ func main() {
 	e := echo.New()
 	middL := controller.InitMiddleware()
 	e.Use(middL.CORS)
-	ar := repository.NewMySqlUserRequestRepository(dbConn)
+	sql := repository.NewMySqlUserRequestRepository(dbConn)
 
 	timeoutContext := time.Duration(viper.GetInt("context.timeout")) * time.Second
-	au := service.NewUserRequestService(ar, timeoutContext)
+	au := service.NewUserRequestService(sql, timeoutContext)
 	controller.NewUserRequestController(e, au)
 	log.Fatal(e.Start(viper.GetString("server.address")))
 }
